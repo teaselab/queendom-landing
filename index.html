@@ -270,6 +270,10 @@
         font-size: 14px;
       }
 
+      .header-apply-button {
+        min-width: 104px;
+      }
+
       .hero {
         position: relative;
         display: flex;
@@ -931,6 +935,16 @@
           font-size: 11px;
         }
 
+        .header .button {
+          min-height: 38px;
+          padding: 0 14px;
+          font-size: 12px;
+        }
+
+        .header-apply-button {
+          min-width: auto;
+        }
+
         .hero {
           padding: calc(112px + env(safe-area-inset-top)) 0 60px;
         }
@@ -1113,6 +1127,12 @@
           font-size: 10px;
         }
 
+        .header .button {
+          min-height: 34px;
+          padding: 0 11px;
+          font-size: 11px;
+        }
+
         h1 {
           font-size: clamp(28px, 8.8vw, 32px);
         }
@@ -1163,11 +1183,15 @@
           <a href="#for-who" data-i18n="navForWho">Для кого</a>
           <a href="#results" data-i18n="navResults">Результаты</a>
           <a href="https://t.me/queendom_agency" target="_blank" rel="noreferrer">Telegram</a>
-        </nav>        <div class="language-switcher" aria-label="Выбор языка">
+        </nav>
+        <div class="header-actions">
+          <a class="button header-apply-button" href="#application" data-i18n="navApply">Заявка</a>
+          <div class="language-switcher" aria-label="Выбор языка">
             <a href="index.html" class="is-active" data-lang="ru">RU</a>
             <a href="ua/index.html" data-lang="ua">UA</a>
             <a href="en/index.html" data-lang="en">EN</a>
           </div>
+        </div>
       </div>
     </header>
 
