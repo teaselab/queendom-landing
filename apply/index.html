@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Заявка | Queendom Agency</title>
+    <meta name="description" content="Скрытая страница заявки Queendom Agency." />
+    <style>
+      :root {
+        --black: #211719;
+        --ink: #3b2b2f;
+        --rose: #e8aebb;
+        --blush: #f7d9d7;
+        --cream: #f6eadc;
+        --white: #fffaf5;
+        --muted: #f4e4dc;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        min-height: 100svh;
+        margin: 0;
+        overflow-x: hidden;
+        background:
+          radial-gradient(circle at 10% 9%, rgba(245, 204, 213, 0.34), rgba(232, 174, 187, 0.16) 22rem, transparent 52rem),
+          radial-gradient(circle at 90% 14%, rgba(246, 234, 220, 0.26), rgba(246, 220, 211, 0.12) 24rem, transparent 56rem),
+          radial-gradient(circle at 14% 78%, rgba(232, 174, 187, 0.22), rgba(184, 154, 98, 0.1) 24rem, transparent 58rem),
+          radial-gradient(circle at 88% 88%, rgba(216, 154, 167, 0.2), rgba(246, 234, 220, 0.1) 22rem, transparent 56rem),
+          #33252a;
+        color: var(--white);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      img {
+        max-width: 100%;
+      }
+
+      .shell {
+        width: min(1000px, calc(100% - 32px));
+        margin-inline: auto;
+      }
+
+      .header {
+        padding: calc(18px + env(safe-area-inset-top, 0px)) 0 18px;
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 82px;
+        border: 2px solid rgba(255, 250, 245, 0.78);
+        border-radius: 999px;
+        background:
+          linear-gradient(135deg, rgba(255, 250, 245, 0.68), rgba(232, 210, 204, 0.48)),
+          rgba(247, 217, 215, 0.28);
+        padding: 10px 18px;
+        box-shadow:
+          0 22px 70px rgba(33, 23, 25, 0.24),
+          inset 0 1px 0 rgba(255, 255, 255, 0.84),
+          inset 0 -18px 46px rgba(59, 43, 47, 0.08);
+        backdrop-filter: blur(30px) saturate(1.28);
+        -webkit-backdrop-filter: blur(30px) saturate(1.28);
+      }
+
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo img {
+        width: 56px;
+        height: 56px;
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        border-radius: 50%;
+        background: #f6eee2;
+        box-shadow: 0 12px 34px rgba(59, 43, 47, 0.16);
+        object-fit: cover;
+      }
+
+      .logo strong,
+      .logo span {
+        display: block;
+        color: var(--ink);
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .logo strong {
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: -0.01em;
+      }
+
+      .logo span {
+        margin-top: 6px;
+        color: #6f4650;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.42em;
+      }
+
+      .main {
+        display: grid;
+        min-height: calc(100svh - 156px);
+        place-items: center;
+        padding: 42px 0 72px;
+      }
+
+      .glass {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.74);
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.14)),
+          linear-gradient(135deg, rgba(247, 217, 215, 0.26), rgba(246, 234, 220, 0.12));
+        box-shadow:
+          0 30px 100px rgba(33, 23, 25, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.94),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.34),
+          inset 0 0 34px rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(52px) saturate(1.75) contrast(1.04);
+        -webkit-backdrop-filter: blur(52px) saturate(1.75) contrast(1.04);
+      }
+
+      .glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          linear-gradient(120deg, rgba(255, 255, 255, 0.62), transparent 24%, transparent 62%, rgba(255, 255, 255, 0.22)),
+          radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.62), transparent 22rem);
+        opacity: 0.72;
+      }
+
+      .form-wrap {
+        display: grid;
+        max-width: 1000px;
+        margin-inline: auto;
+        border-radius: 32px;
+        grid-template-columns: 0.9fr 1.1fr;
+      }
+
+      .form-info {
+        padding: 42px;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(246, 220, 211, 0.26), transparent 28rem),
+          radial-gradient(circle at 76% 22%, rgba(232, 174, 187, 0.34), transparent 26rem),
+          linear-gradient(145deg, rgba(255, 255, 255, 0.46), rgba(255, 246, 238, 0.2));
+      }
+
+      .form-info .small-box {
+        margin-top: 48px;
+        border: 1px solid rgba(255, 255, 255, 0.62);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.24);
+        padding: 22px;
+      }
+
+      .eyebrow {
+        margin: 0;
+        color: #7b4f58;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.24);
+      }
+
+      h1,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        margin-top: 14px;
+        color: var(--ink);
+        font-size: clamp(42px, 7vw, 68px);
+        line-height: 0.98;
+      }
+
+      .lead,
+      .note {
+        margin-top: 18px;
+        color: var(--ink);
+        line-height: 1.65;
+      }
+
+      .note {
+        color: rgba(59, 43, 47, 0.74);
+      }
+
+      .form {
+        padding: 42px;
+      }
+
+      .fields {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      label span {
+        display: block;
+        margin-bottom: 9px;
+        color: rgba(59, 43, 47, 0.72);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      input {
+        width: 100%;
+        height: 56px;
+        border: 1px solid rgba(255, 255, 255, 0.66);
+        border-radius: 18px;
+        outline: 0;
+        background: rgba(255, 255, 255, 0.32);
+        color: var(--black);
+        padding: 0 20px;
+        transition:
+          border-color 0.25s ease,
+          box-shadow 0.25s ease,
+          background 0.25s ease;
+      }
+
+      input::placeholder {
+        color: rgba(58, 43, 45, 0.38);
+      }
+
+      input:focus {
+        border-color: rgba(216, 154, 167, 0.48);
+        background: rgba(255, 255, 255, 0.48);
+        box-shadow: 0 0 0 4px rgba(232, 174, 187, 0.16);
+      }
+
+      .button {
+        position: relative;
+        display: inline-flex;
+        width: 100%;
+        min-height: 58px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 28px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 999px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.52), rgba(247, 217, 215, 0.34)),
+          rgba(255, 255, 255, 0.24);
+        color: var(--black);
+        cursor: pointer;
+        font-weight: 900;
+        box-shadow:
+          0 18px 54px rgba(33, 23, 25, 0.16),
+          inset 0 1px 0 rgba(255, 255, 255, 0.86);
+        backdrop-filter: blur(26px) saturate(1.5);
+        -webkit-backdrop-filter: blur(26px) saturate(1.5);
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          opacity 0.25s ease;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 24px 72px rgba(216, 154, 167, 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.88);
+      }
+
+      .button:disabled {
+        cursor: wait;
+        opacity: 0.72;
+        transform: none;
+      }
+
+      .success {
+        display: none;
+        margin-top: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.66);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.32);
+        color: var(--ink);
+        padding: 22px;
+        text-align: center;
+      }
+
+      .success strong {
+        display: block;
+        font-size: 24px;
+      }
+
+      .success p {
+        margin-top: 10px;
+        color: rgba(59, 43, 47, 0.74);
+        line-height: 1.6;
+      }
+
+      .footer {
+        padding: 0 0 calc(34px + env(safe-area-inset-bottom, 0px));
+        text-align: center;
+      }
+
+      .footer p {
+        color: rgba(255, 250, 245, 0.62);
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      @media (max-width: 860px) {
+        .main {
+          min-height: auto;
+          padding: 28px 0 52px;
+        }
+
+        .form-wrap {
+          grid-template-columns: 1fr;
+          max-width: 620px;
+        }
+
+        .fields {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .shell {
+          width: min(100% - 20px, 1000px);
+        }
+
+        .header {
+          padding: calc(10px + env(safe-area-inset-top, 0px)) 0 10px;
+        }
+
+        .header-inner {
+          min-height: 66px;
+          padding: 8px;
+          border-radius: 28px;
+        }
+
+        .logo img {
+          width: 44px;
+          height: 44px;
+        }
+
+        .logo strong {
+          font-size: 14px;
+        }
+
+        .logo span {
+          font-size: 10px;
+          letter-spacing: 0.3em;
+        }
+
+        .main {
+          padding: 14px 0 34px;
+        }
+
+        .form-wrap {
+          border-radius: 26px;
+        }
+
+        .form-info,
+        .form {
+          padding: 24px;
+        }
+
+        .form-info .small-box {
+          margin-top: 22px;
+          padding: 18px;
+          border-radius: 20px;
+        }
+
+        h1 {
+          font-size: 38px;
+          line-height: 1;
+        }
+
+        .lead,
+        .note {
+          margin-top: 14px;
+          font-size: 15px;
+          line-height: 1.55;
+        }
+
+        input {
+          height: 54px;
+          border-radius: 16px;
+          font-size: 16px;
+        }
+
+        .button {
+          min-height: 56px;
+          margin-top: 22px;
+          font-size: 15px;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .shell {
+          width: min(100% - 16px, 1000px);
+        }
+
+        .logo {
+          gap: 8px;
+        }
+
+        .logo img {
+          width: 40px;
+          height: 40px;
+        }
+
+        .logo strong {
+          font-size: 13px;
+        }
+
+        .logo span {
+          margin-top: 4px;
+          font-size: 9px;
+          letter-spacing: 0.24em;
+        }
+
+        .form-info,
+        .form {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 34px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="shell header-inner">
+        <div class="logo" aria-label="Queendom Agency">
+          <img src="../assets/queendom-logo.jpg" alt="Queendom Agency" />
+          <div>
+            <strong>Queendom</strong>
+            <span>Agency</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="shell">
+        <div class="glass form-wrap">
+          <div class="form-info">
+            <p class="eyebrow">Заявка</p>
+            <h1>Оставь заявку</h1>
+            <p class="lead">Заполни форму и мы свяжемся с тобой в Telegram.</p>
+            <div class="small-box">
+              <p class="eyebrow">Конфиденциально</p>
+              <p class="note">Данные используются только для связи и первичной консультации.</p>
+            </div>
+          </div>
+
+          <form class="form" id="application-form">
+            <div class="fields">
+              <label>
+                <span>Telegram</span>
+                <input id="telegram-input" name="username" type="text" placeholder="@username" autocomplete="username" required />
+              </label>
+              <label>
+                <span>Номер телефона</span>
+                <input id="phone-input" name="number" type="tel" placeholder="+380 99 000 00 00" autocomplete="tel" required />
+              </label>
+            </div>
+            <button class="button" type="submit" id="submit-button">Отправить заявку</button>
+            <div class="success" id="success-message">
+              <strong>Спасибо</strong>
+              <p>Мы получили заявку и скоро свяжемся с тобой в Telegram.</p>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer shell">
+      <p>© 2026 Queendom Agency</p>
+    </footer>
+
+    <script>
+      const applicationForm = document.getElementById("application-form");
+      const successMessage = document.getElementById("success-message");
+      const telegramInput = document.getElementById("telegram-input");
+      const submitButton = document.getElementById("submit-button");
+      const submitEndpoint =
+        "https://script.google.com/macros/s/AKfycbzCJZYZEedWOGCcs2B0RMwntHwPgW46stOYIwUUhuvi7cG-20j4SAZjB0Z_RQJTVTYCPw/exec";
+
+      const normalizeTelegram = (value) => {
+        const cleanValue = value.trim().replace(/^@+/, "");
+        return cleanValue ? `@${cleanValue}` : "";
+      };
+
+      const normalizePhoneNumber = (value) => {
+        const trimmedValue = value.trim();
+        if (!trimmedValue) return "";
+
+        const digits = trimmedValue.replace(/\D/g, "");
+        if (trimmedValue.startsWith("+")) {
+          return digits ? `+${digits}` : "";
+        }
+
+        return digits;
+      };
+
+      telegramInput.addEventListener("input", () => {
+        const normalized = normalizeTelegram(telegramInput.value);
+        if (telegramInput.value && telegramInput.value !== normalized) {
+          telegramInput.value = normalized;
+        }
+      });
+
+      telegramInput.addEventListener("blur", () => {
+        telegramInput.value = normalizeTelegram(telegramInput.value);
+      });
+
+      const detectBrowser = () => {
+        const userAgent = navigator.userAgent;
+        if (userAgent.includes("Edg/")) return "Microsoft Edge";
+        if (userAgent.includes("OPR/") || userAgent.includes("Opera")) return "Opera";
+        if (userAgent.includes("Chrome/") && !userAgent.includes("Edg/")) return "Chrome";
+        if (userAgent.includes("Safari/") && !userAgent.includes("Chrome/")) return "Safari";
+        if (userAgent.includes("Firefox/")) return "Firefox";
+        return userAgent || "unknown";
+      };
+
+      const detectDeviceType = () => {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const touchPoints = navigator.maxTouchPoints || 0;
+
+        if (/ipad|tablet/.test(userAgent)) return "tablet";
+        if (/mobi|android|iphone|ipod/.test(userAgent)) return "mobile";
+        if (touchPoints > 1 && window.innerWidth < 1024) return "tablet";
+        return "desktop";
+      };
+
+      const getClientMetadata = async () => {
+        const metadata = {
+          device: detectDeviceType(),
+          browser: detectBrowser(),
+          countryip: "unknown",
+        };
+
+        try {
+          const controller = new AbortController();
+          const timeout = window.setTimeout(() => controller.abort(), 2500);
+          const response = await fetch("https://ipapi.co/json/", {
+            cache: "no-store",
+            signal: controller.signal,
+          });
+          window.clearTimeout(timeout);
+
+          if (response.ok) {
+            const data = await response.json();
+            metadata.countryip = data.country_name || data.country || data.country_code || "unknown";
+          }
+        } catch (error) {
+          console.warn("IP service unavailable", error);
+        }
+
+        return metadata;
+      };
+
+      applicationForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Отправляем...";
+
+        try {
+          const formData = new FormData(applicationForm);
+          const username = normalizeTelegram(formData.get("username") || "");
+          const number = normalizePhoneNumber(formData.get("number") || "");
+          let clientMetadata = {
+            device: "unknown",
+            browser: navigator.userAgent || "unknown",
+            countryip: "unknown",
+          };
+
+          try {
+            clientMetadata = await getClientMetadata();
+          } catch (error) {
+            console.warn("Client metadata unavailable", error);
+          }
+
+          const payload = {
+            date: new Date().toLocaleString(),
+            username,
+            number,
+            device: clientMetadata.device,
+            browser: clientMetadata.browser,
+            countryip: clientMetadata.countryip,
+          };
+
+          await fetch(submitEndpoint, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          applicationForm.reset();
+          successMessage.style.display = "block";
+        } catch (error) {
+          alert("Не удалось отправить заявку. Попробуй еще раз.");
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Отправить заявку";
+        }
+      });
+    </script>
+  </body>
+</html>
