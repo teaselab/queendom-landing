@@ -1,8 +1,8 @@
-<!doctype html>
-<html lang="ru">
+﻿<!doctype html>
+<html lang="ru" data-page-lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Queendom Agency</title>
     <meta
       name="description"
@@ -29,27 +29,23 @@
 
       html {
         scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
       }
 
       body {
         margin: 0;
+        width: 100%;
         min-height: 100vh;
         overflow-x: hidden;
+        overscroll-behavior-x: none;
         background:
-          radial-gradient(circle at 14% 12%, rgba(232, 174, 187, 0.24), transparent 30rem),
-          radial-gradient(circle at 86% 18%, rgba(246, 220, 211, 0.2), transparent 34rem),
-          radial-gradient(circle at 22% 72%, rgba(184, 154, 98, 0.12), transparent 32rem),
-          radial-gradient(circle at 78% 78%, rgba(232, 174, 187, 0.16), transparent 34rem),
-          radial-gradient(ellipse at 52% 46%, rgba(92, 62, 68, 0.34), transparent 64rem),
-          linear-gradient(145deg, #3f2d31 0%, #33252a 48%, #241a1e 100%);
-        background-attachment: fixed;
-        background-size:
-          1200px 900px,
-          1100px 900px,
-          1200px 1000px,
-          1000px 900px,
-          1400px 1000px,
-          100% 100%;
+          radial-gradient(circle at 10% 9%, rgba(245, 204, 213, 0.34), rgba(232, 174, 187, 0.16) 22rem, transparent 52rem),
+          radial-gradient(circle at 90% 14%, rgba(246, 234, 220, 0.26), rgba(246, 220, 211, 0.12) 24rem, transparent 56rem),
+          radial-gradient(circle at 14% 78%, rgba(232, 174, 187, 0.22), rgba(184, 154, 98, 0.1) 24rem, transparent 58rem),
+          radial-gradient(circle at 88% 88%, rgba(216, 154, 167, 0.2), rgba(246, 234, 220, 0.1) 22rem, transparent 56rem),
+          #33252a;
+        background-attachment: scroll;
+        background-repeat: no-repeat;
         color: var(--white);
         font-family:
           Inter,
@@ -64,12 +60,18 @@
       a {
         color: inherit;
         text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      img {
+        max-width: 100%;
       }
 
       button,
       input,
       select {
         font: inherit;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .shell {
@@ -79,16 +81,10 @@
 
       .header {
         position: fixed;
-        inset: 0 0 auto;
+        padding-top: env(safe-area-inset-top);
+        inset: 10px 0 auto;
         z-index: 20;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.42);
-        background:
-          linear-gradient(135deg, rgba(255, 250, 245, 0.74), rgba(247, 217, 215, 0.44)),
-          rgba(255, 248, 240, 0.32);
-        box-shadow:
-          0 18px 70px rgba(33, 23, 25, 0.24),
-          inset 0 1px 0 rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(34px) saturate(1.45);
+        pointer-events: none;
       }
 
       .header-inner {
@@ -97,22 +93,35 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
+        width: min(1120px, calc(100% - 48px));
+        border: 2px solid rgba(255, 250, 245, 0.88);
+        border-radius: 999px;
+        background:
+          linear-gradient(135deg, rgba(255, 250, 245, 0.68), rgba(232, 210, 204, 0.48)),
+          rgba(247, 217, 215, 0.28);
+        padding: 8px 16px 8px 14px;
+        box-shadow:
+          0 22px 70px rgba(33, 23, 25, 0.24),
+          inset 0 1px 0 rgba(255, 255, 255, 0.84),
+          inset 0 -18px 46px rgba(59, 43, 47, 0.08);
+        backdrop-filter: blur(30px) saturate(1.28);
+        pointer-events: auto;
       }
 
       .logo {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
 
       .logo img {
-        width: 46px;
-        height: 46px;
+        width: 54px;
+        height: 54px;
         border-radius: 50%;
         object-fit: cover;
         background: #f6eee2;
         border: 1px solid rgba(255, 255, 255, 0.78);
-        box-shadow: 0 14px 42px rgba(168, 126, 130, 0.18);
+        box-shadow: 0 12px 34px rgba(59, 43, 47, 0.16);
       }
 
       .hero-logo img {
@@ -128,14 +137,17 @@
       }
 
       .logo strong {
-        font-size: 13px;
-        letter-spacing: 0.28em;
+        color: #3b2b2f;
+        font-size: 16px;
+        letter-spacing: -0.01em;
+        font-weight: 900;
       }
 
       .logo span {
-        margin-top: 7px;
-        color: var(--rose);
-        font-size: 11px;
+        margin-top: 6px;
+        color: #6f4650;
+        font-size: 12px;
+        font-weight: 900;
         letter-spacing: 0.42em;
       }
 
@@ -164,19 +176,22 @@
 
       .language-switcher {
         display: inline-flex;
-        gap: 4px;
-        border: 1px solid rgba(255, 255, 255, 0.62);
+        gap: 6px;
+        border: 1px solid rgba(255, 250, 245, 0.72);
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.24);
-        padding: 4px;
+        background: rgba(255, 246, 238, 0.28);
+        padding: 5px;
         box-shadow:
           inset 0 1px 0 rgba(255, 255, 255, 0.76),
           0 14px 38px rgba(33, 23, 25, 0.12);
         backdrop-filter: blur(22px) saturate(1.35);
       }
 
-      .language-switcher button {
-        min-width: 38px;
+      .language-switcher a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
         height: 34px;
         border: 0;
         border-radius: 999px;
@@ -192,8 +207,8 @@
           box-shadow 0.25s ease;
       }
 
-      .language-switcher button.is-active {
-        background: rgba(255, 255, 255, 0.58);
+      .language-switcher a.is-active {
+        background: rgba(255, 250, 245, 0.86);
         color: var(--black);
         box-shadow:
           inset 0 1px 0 rgba(255, 255, 255, 0.88),
@@ -712,6 +727,7 @@
       select {
         width: 100%;
         height: 56px;
+        font-size: 16px;
         outline: 0;
         border: 1px solid rgba(255, 255, 255, 0.66);
         border-radius: 18px;
@@ -852,10 +868,23 @@
           gap: 8px;
         }
 
+        .hero {
+          min-height: auto;
+          padding: calc(128px + env(safe-area-inset-top)) 0 76px;
+        }
+
         .hero-grid,
         .for-grid,
         .form-wrap {
           grid-template-columns: 1fr;
+        }
+
+        .hero-copy {
+          width: min(100%, 680px);
+        }
+
+        .hero-card-wrap {
+          width: min(100%, 500px);
         }
 
         .cards-4,
@@ -866,32 +895,58 @@
       }
 
       @media (max-width: 620px) {
+        .shell {
+          width: min(100% - 28px, 1120px);
+        }
+
         .header-inner {
-          height: 80px;
+          width: min(100% - 28px, 1120px);
+          height: 70px;
+          gap: 8px;
+          padding: 7px 10px 7px 8px;
+        }
+
+        .logo {
+          gap: 8px;
+        }
+
+        .logo img {
+          width: 48px;
+          height: 48px;
         }
 
         .logo strong {
-          font-size: 12px;
+          font-size: 14px;
+          letter-spacing: -0.01em;
         }
 
-        .header .button {
-          min-height: 44px;
-          padding: 0 16px;
+        .logo span {
+          font-size: 10px;
+          letter-spacing: 0.34em;
         }
 
-        .language-switcher button {
+        .language-switcher a {
           min-width: 34px;
           height: 32px;
           font-size: 11px;
         }
 
         .hero {
-          padding-top: 130px;
+          padding: calc(112px + env(safe-area-inset-top)) 0 60px;
+        }
+
+        .hero-grid {
+          gap: 38px;
         }
 
         h1 {
-          font-size: 40px;
+          max-width: 100%;
+          font-size: clamp(32px, 9.6vw, 40px);
           line-height: 1.08;
+        }
+
+        h2 {
+          font-size: clamp(30px, 8.8vw, 38px);
         }
 
         .hero-title-word {
@@ -899,13 +954,61 @@
         }
 
         .lead {
-          font-size: 18px;
+          font-size: 16px;
+          line-height: 1.55;
+        }
+
+        .pills {
+          gap: 8px;
+        }
+
+        .pill {
+          padding: 9px 12px;
+          font-size: 13px;
+        }
+
+        .hero .button {
+          width: 100%;
+          max-width: 320px;
+        }
+
+        .hero-card-wrap {
+          width: min(100%, 410px);
         }
 
         .hero-card,
         .form,
         .form-info {
-          padding: 24px;
+          padding: 22px;
+          border-radius: 24px;
+        }
+
+        .hero-card-wrap::before {
+          inset: -18px;
+          border-radius: 34px;
+        }
+
+        .hero-visual {
+          border-radius: 22px;
+        }
+
+        .hero-caption {
+          inset: auto 18px 18px;
+          min-height: auto;
+          padding: 18px;
+          border-radius: 20px;
+        }
+
+        .hero-caption p:last-child {
+          font-size: clamp(18px, 5.2vw, 22px);
+        }
+
+        .section {
+          padding: 62px 0;
+        }
+
+        .section-head {
+          margin-bottom: 30px;
         }
 
         .cards-4,
@@ -915,6 +1018,133 @@
           grid-template-columns: 1fr;
         }
 
+        .card {
+          border-radius: 24px;
+          padding: 24px;
+        }
+
+        .cards-4 .card h3,
+        .cards-4 .card:nth-child(4) h3 {
+          white-space: normal;
+          font-size: 22px;
+          letter-spacing: 0;
+        }
+
+        .result-card {
+          min-height: 300px;
+        }
+
+        .income strong {
+          font-size: clamp(31px, 8.6vw, 36px);
+        }
+
+        input,
+        select {
+          height: 54px;
+          padding: 0 16px;
+        }
+
+        footer {
+          padding-bottom: calc(44px + env(safe-area-inset-bottom));
+        }
+      }
+
+      @media (max-width: 430px) {
+        .shell {
+          width: min(100% - 24px, 1120px);
+        }
+
+        .hero {
+          padding-top: calc(104px + env(safe-area-inset-top));
+        }
+
+        h1 {
+          font-size: clamp(30px, 9.1vw, 36px);
+        }
+
+        .eyebrow {
+          font-size: 11px;
+          letter-spacing: 0.24em;
+        }
+
+        .hero-card,
+        .form,
+        .form-info,
+        .card {
+          padding: 20px;
+        }
+
+        .hero-caption {
+          inset: auto 14px 14px;
+          padding: 16px;
+        }
+
+        .number,
+        .check {
+          width: 50px;
+          height: 50px;
+        }
+      }
+
+      @media (max-width: 370px) {
+        .header-inner {
+          width: min(100% - 18px, 1120px);
+          height: 64px;
+          padding: 6px 8px 6px 7px;
+        }
+
+        .logo img {
+          width: 44px;
+          height: 44px;
+        }
+
+        .logo strong {
+          font-size: 12px;
+        }
+
+        .logo span {
+          font-size: 9px;
+          letter-spacing: 0.26em;
+        }
+
+        .language-switcher a {
+          min-width: 30px;
+          height: 30px;
+          font-size: 10px;
+        }
+
+        h1 {
+          font-size: clamp(28px, 8.8vw, 32px);
+        }
+
+        .hero-card,
+        .form,
+        .form-info,
+        .card {
+          padding: 18px;
+        }
+      }
+
+      @media (hover: none) and (pointer: coarse) {
+        .button:hover,
+        .card:hover {
+          transform: none;
+        }
+
+        .button:hover::before {
+          transform: translateX(-120%);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     </style>
   </head>
@@ -928,20 +1158,16 @@
             <span>Agency</span>
           </div>
         </a>
-        <nav class="nav">
+                <nav class="nav">
           <a href="#benefits" data-i18n="navBenefits">Преимущества</a>
           <a href="#for-who" data-i18n="navForWho">Для кого</a>
           <a href="#results" data-i18n="navResults">Результаты</a>
           <a href="https://t.me/queendom_agency" target="_blank" rel="noreferrer">Telegram</a>
-        </nav>
-        <div class="header-actions">
-          <a class="button" href="#application" data-i18n="navApply">Заявка</a>
-          <div class="language-switcher" aria-label="Выбор языка">
-            <button type="button" class="is-active" data-lang="ru">RU</button>
-            <button type="button" data-lang="ua">UA</button>
-            <button type="button" data-lang="en">EN</button>
+        </nav>        <div class="language-switcher" aria-label="Выбор языка">
+            <a href="index.html" class="is-active" data-lang="ru">RU</a>
+            <a href="ua/index.html" data-lang="ua">UA</a>
+            <a href="en/index.html" data-lang="en">EN</a>
           </div>
-        </div>
       </div>
     </header>
 
@@ -1417,10 +1643,6 @@
         });
       };
 
-      languageButtons.forEach((button) => {
-        button.addEventListener("click", () => setLanguage(button.dataset.lang));
-      });
-
       const normalizeTelegram = (value) => {
         const cleanValue = value.trim().replace(/^@+/, "");
         return cleanValue ? `@${cleanValue}` : "";
@@ -1449,7 +1671,7 @@
         telegramInput.value = normalizeTelegram(telegramInput.value);
       });
 
-      setLanguage("ru");
+      setLanguage(document.documentElement.dataset.pageLang || "ru");
 
       const detectBrowser = () => {
         const ua = navigator.userAgent;
