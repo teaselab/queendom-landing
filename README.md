@@ -2,15 +2,18 @@
 
 Static one-page landing for Queendom Agency.
 
-## Deploy on GitHub Pages
+## Deploy
 
-1. Upload all files from this folder to a GitHub repository.
-2. Keep `index.html` in the repository root.
-3. In GitHub, open `Settings` -> `Pages`.
-4. Select the main branch and root folder.
-5. Save and wait for GitHub Pages to publish the site.
+Upload all files from this folder to a GitHub repository and deploy it on Vercel.
+GitHub Pages will not run the `/api/lead.js` serverless function.
 
-The form sends applications to the configured Google Apps Script Web App URL.
+Set these Environment Variables in Vercel:
+
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+- `GOOGLE_SHEETS_ENDPOINT`
+
+The form sends extended application data to Google Sheets and a short lead notification to Telegram.
 
 ## Language URLs
 

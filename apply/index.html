@@ -840,6 +840,25 @@
         }
       }
     </style>
+    <!-- Meta Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+
+      fbq('init', '995470240029815');
+      fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=995470240029815&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Meta Pixel Code -->
   </head>
   <body>
     <header class="header">
@@ -892,8 +911,7 @@
       const successMessage = document.getElementById("success-message");
       const telegramInput = document.getElementById("telegram-input");
       const submitButton = document.getElementById("submit-button");
-      const submitEndpoint =
-        "https://script.google.com/macros/s/AKfycbzCJZYZEedWOGCcs2B0RMwntHwPgW46stOYIwUUhuvi7cG-20j4SAZjB0Z_RQJTVTYCPw/exec";
+      const submitEndpoint = "/api/lead";
 
       const normalizeTelegram = (value) => {
         const cleanValue = value.trim().replace(/^@+/, "");
@@ -969,6 +987,19 @@
 
         return metadata;
       };
+      const getTrackingParams = () => {
+        const params = new URLSearchParams(window.location.search);
+        const readParam = (...names) =>
+          names.map((name) => params.get(name)).find((value) => value && value.trim()) || "";
+
+        return {
+          campaign: readParam("utm_campaign", "campaign"),
+          adset: readParam("utm_adset", "adset"),
+          creative: readParam("utm_creative", "utm_content", "creative"),
+          placement: readParam("utm_placement", "placement"),
+          landing: window.location.href,
+        };
+      };
 
       applicationForm.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -992,26 +1023,42 @@
             console.warn("Client metadata unavailable", error);
           }
 
+          const createdAt = new Date().toLocaleString();
+          const trackingParams = getTrackingParams();
           const payload = {
-            date: new Date().toLocaleString(),
+            date: createdAt,
+            created_at: createdAt,
             username,
             number,
+            telegram: username,
+            phone: number,
             device: clientMetadata.device,
             browser: clientMetadata.browser,
             countryip: clientMetadata.countryip,
+            campaign: trackingParams.campaign,
+            adset: trackingParams.adset,
+            creative: trackingParams.creative,
+            placement: trackingParams.placement,
+            landing: trackingParams.landing,
           };
 
-          await fetch(submitEndpoint, {
+          const response = await fetch(submitEndpoint, {
             method: "POST",
-            mode: "no-cors",
             headers: {
-              "Content-Type": "text/plain;charset=utf-8",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
           });
 
+          if (!response.ok) {
+            throw new Error("Lead request failed");
+          }
+
           applicationForm.reset();
           successMessage.style.display = "block";
+          if (typeof fbq === "function") {
+            fbq('track', 'Lead');
+          }
         } catch (error) {
           alert("Не удалось отправить заявку. Попробуй еще раз.");
         } finally {
