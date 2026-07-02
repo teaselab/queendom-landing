@@ -1042,29 +1042,26 @@
 
       const collectTrackingParams = () => {
         const params = new URLSearchParams(window.location.search);
-        const stored = getStoredTrackingParams();
         const current = {};
 
         trackingParamNames.forEach((name) => {
           const value = params.get(name);
-          if (value) current[name] = value;
+          current[name] = value || "";
         });
 
-        const fbclid = current.fbclid || stored.fbclid || "";
-        const fbp = getCookieValue("_fbp") || stored._fbp || "";
-        const fbc = getCookieValue("_fbc") || stored._fbc || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : "");
-        const merged = {
-          ...stored,
+        const fbclid = current.fbclid || "";
+        const fbp = getCookieValue("_fbp") || "";
+        const fbc = getCookieValue("_fbc") || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : "");
+        const collected = {
           ...current,
           fbclid,
           _fbp: fbp,
           _fbc: fbc,
         };
 
-        saveTrackingParams(merged);
-        return merged;
+        saveTrackingParams(collected);
+        return collected;
       };
-
       collectTrackingParams();
 
       const createEventId = () => {
@@ -1146,11 +1143,11 @@
             utm_campaign: trackingParams.utm_campaign || "",
             utm_content: trackingParams.utm_content || "",
             utm_term: trackingParams.utm_term || "",
-            campaign: trackingParams.campaign || trackingParams.utm_campaign || "",
+            campaign: trackingParams.campaign || "",
             campaign_id: trackingParams.campaign_id || "",
-            adset: trackingParams.adset || trackingParams.utm_term || "",
+            adset: trackingParams.adset || "",
             adset_id: trackingParams.adset_id || "",
-            creative: trackingParams.creative || trackingParams.utm_content || "",
+            creative: trackingParams.creative || "",
             ad_id: trackingParams.ad_id || "",
             placement: trackingParams.placement || "",
             site_source_name: trackingParams.site_source_name || "",

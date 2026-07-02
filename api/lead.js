@@ -56,9 +56,9 @@ const buildSheetsPayload = ({ body, clientIp, requestId }) => {
   const createdAtIso = field(body.created_at_iso) || new Date().toISOString();
   const phone = field(body.phone || body.number);
   const telegram = field(body.telegram || body.username);
-  const campaignName = field(body.campaign || body.utm_campaign);
-  const adsetName = field(body.adset || body.utm_term);
-  const creative = field(body.creative || body.utm_content);
+  const campaignName = field(body.campaign);
+  const adsetName = field(body.adset);
+  const creative = field(body.creative);
   const eventId = field(body.event_id) || leadId;
   const metaEventId = field(body.meta_event_id) || eventId;
   const language = normalizeLanguage(body.language);
@@ -81,6 +81,7 @@ const buildSheetsPayload = ({ body, clientIp, requestId }) => {
     "Source Tag": field(body.source_tag),
     utm_source: field(body.utm_source),
     utm_medium: field(body.utm_medium),
+    utm_agency: field(body.utm_agency),
     utm_campaign: field(body.utm_campaign),
     utm_content: field(body.utm_content),
     utm_term: field(body.utm_term),
@@ -121,6 +122,7 @@ const buildSheetsPayload = ({ body, clientIp, requestId }) => {
     source_tag: field(body.source_tag),
     utm_source: field(body.utm_source),
     utm_medium: field(body.utm_medium),
+    utm_agency: field(body.utm_agency),
     utm_campaign: field(body.utm_campaign),
     utm_content: field(body.utm_content),
     utm_term: field(body.utm_term),
@@ -155,19 +157,15 @@ const buildTelegramMessage = (payload) =>
     "",
     `📱 Телефон: ${displayField(payload.PHONE)}`,
     `💬 Telegram: ${displayField(payload.TELEGRAM)}`,
-    "",
-    "🌍 Язык:",
-    displayField(payload.Language),
-    "",
-    "📍 Landing:",
-    displayField(payload.Landing),
+    `🌍 Язык: ${displayField(payload.Language)}`,
+    `📍 Landing: ${displayField(payload.Landing)}`,
     "",
     `📈 Кампания: ${displayField(payload["Campaign Name"])}`,
     `🎯 Adset: ${displayField(payload["Adset Name"])}`,
     `🎨 Creative: ${displayField(payload.Creative)}`,
     `📍 Placement: ${displayField(payload.Placement)}`,
     "",
-    `🕒 Время: ${displayField(payload["Lead Generation Date"])}`,
+    `🕒 Дата: ${displayField(payload["Lead Generation Date"])}`,
   ].join("\n");
 
 const sendToGoogleSheets = async (payload) => {
