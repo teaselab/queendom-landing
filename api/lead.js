@@ -3,14 +3,6 @@ const { randomUUID } = require("crypto");
 const defaultSheetsEndpoint =
   "https://script.google.com/macros/s/AKfycbzCJZYZEedWOGCcs2B0RMwntHwPgW46stOYIwUUhuvi7cG-20j4SAZjB0Z_RQJTVTYCPw/exec";
 
-const escapeHtml = (value = "") =>
-  String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-
 const field = (value) => {
   const cleanValue = String(value || "").trim();
   return cleanValue || "";
@@ -29,6 +21,35 @@ const getClientIp = (req) => {
   return getHeader(req, "x-real-ip") || "";
 };
 
+const looksLikeUrl = (value) => /^https?:\/\//i.test(field(value));
+
+const normalizeLanguage = (value) => {
+  const language = field(value).toLowerCase();
+  if (language === "uk") return "ua";
+  return language;
+};
+
+const inferLanding = (body) => {
+  const rawLanding = field(body.landing);
+  if (rawLanding && !looksLikeUrl(rawLanding)) return rawLanding;
+
+  const language = normalizeLanguage(body.language);
+  const pageValue = `${field(body.page_path)} ${field(body.page_url)} ${rawLanding}`.toLowerCase();
+  const isApply = pageValue.includes("/apply/");
+  const inferredLanguage =
+    language ||
+    (pageValue.includes("/ua/") ? "ua" : pageValue.includes("/ru/") ? "ru" : pageValue.includes("/en/") ? "en" : "");
+
+  if (!inferredLanguage) return "";
+  return isApply ? `apply_${inferredLanguage}` : `full_${inferredLanguage}`;
+};
+
+const inferFunnel = (body, landing) => {
+  const rawFunnel = field(body.funnel);
+  if (rawFunnel && !looksLikeUrl(rawFunnel)) return rawFunnel;
+  return landing;
+};
+
 const buildSheetsPayload = ({ body, clientIp, requestId }) => {
   const leadId = field(body.lead_id) || randomUUID();
   const leadGenerationDate = field(body.created_at || body.date) || new Date().toLocaleString("ru-RU");
@@ -40,6 +61,9 @@ const buildSheetsPayload = ({ body, clientIp, requestId }) => {
   const creative = field(body.creative || body.utm_content);
   const eventId = field(body.event_id) || leadId;
   const metaEventId = field(body.meta_event_id) || eventId;
+  const language = normalizeLanguage(body.language);
+  const landing = inferLanding(body);
+  const funnel = inferFunnel(body, landing);
 
   return {
     "Lead ID": leadId,
@@ -50,9 +74,9 @@ const buildSheetsPayload = ({ body, clientIp, requestId }) => {
     "Telegram Link": field(body.telegram_link) || (telegram ? `https://t.me/${telegram.replace(/^@/, "")}` : ""),
     "Page Path": field(body.page_path),
     "Page URL": field(body.page_url),
-    Landing: field(body.landing),
-    Funnel: field(body.funnel),
-    Language: field(body.language),
+    Landing: landing,
+    Funnel: funnel,
+    Language: language,
     Platform: field(body.platform || body.utm_source),
     "Source Tag": field(body.source_tag),
     utm_source: field(body.utm_source),
@@ -90,9 +114,9 @@ const buildSheetsPayload = ({ body, clientIp, requestId }) => {
     telegram_link: field(body.telegram_link) || (telegram ? `https://t.me/${telegram.replace(/^@/, "")}` : ""),
     page_path: field(body.page_path),
     page_url: field(body.page_url),
-    landing: field(body.landing),
-    funnel: field(body.funnel),
-    language: field(body.language),
+    landing,
+    funnel,
+    language,
     platform: field(body.platform || body.utm_source),
     source_tag: field(body.source_tag),
     utm_source: field(body.utm_source),
@@ -127,34 +151,23 @@ const buildSheetsPayload = ({ body, clientIp, requestId }) => {
 
 const buildTelegramMessage = (payload) =>
   [
-    "🔥 <b>Новая заявка</b>",
+    "🔥 Новая заявка",
     "",
-    "📱 Телефон:",
-    `<code>${escapeHtml(displayField(payload.PHONE))}</code>`,
-    "",
-    "💬 Telegram:",
-    `<code>${escapeHtml(displayField(payload.TELEGRAM))}</code>`,
+    `📱 Телефон: ${displayField(payload.PHONE)}`,
+    `💬 Telegram: ${displayField(payload.TELEGRAM)}`,
     "",
     "🌍 Язык:",
-    escapeHtml(displayField(payload.Language)),
+    displayField(payload.Language),
     "",
     "📍 Landing:",
-    escapeHtml(displayField(payload.Landing)),
+    displayField(payload.Landing),
     "",
-    "📈 Кампания:",
-    escapeHtml(displayField(payload["Campaign Name"])),
+    `📈 Кампания: ${displayField(payload["Campaign Name"])}`,
+    `🎯 Adset: ${displayField(payload["Adset Name"])}`,
+    `🎨 Creative: ${displayField(payload.Creative)}`,
+    `📍 Placement: ${displayField(payload.Placement)}`,
     "",
-    "🎯 Adset:",
-    escapeHtml(displayField(payload["Adset Name"])),
-    "",
-    "🎨 Creative:",
-    escapeHtml(displayField(payload.Creative)),
-    "",
-    "📍 Placement:",
-    escapeHtml(displayField(payload.Placement)),
-    "",
-    "🕒 Дата:",
-    escapeHtml(displayField(payload["Lead Generation Date"])),
+    `🕒 Время: ${displayField(payload["Lead Generation Date"])}`,
   ].join("\n");
 
 const sendToGoogleSheets = async (payload) => {
@@ -182,7 +195,6 @@ const sendToTelegram = async ({ token, chatId, payload }) => {
     body: JSON.stringify({
       chat_id: chatId,
       text: buildTelegramMessage(payload),
-      parse_mode: "HTML",
       disable_web_page_preview: true,
     }),
   });
