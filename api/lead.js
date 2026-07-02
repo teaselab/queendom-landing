@@ -159,6 +159,7 @@ const buildTelegramMessage = (payload) =>
     `💬 Telegram: ${displayField(payload.TELEGRAM)}`,
     `🌍 Язык: ${displayField(payload.Language)}`,
     `📍 Landing: ${displayField(payload.Landing)}`,
+    `🏷️ Agency: ${displayField(payload.utm_agency)}`,
     "",
     `📈 Кампания: ${displayField(payload["Campaign Name"])}`,
     `🎯 Adset: ${displayField(payload["Adset Name"])}`,
