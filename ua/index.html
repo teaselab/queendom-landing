@@ -1208,9 +1208,9 @@
         <div class="header-actions">
           <a class="button header-apply-button" href="#application" data-i18n="navApply">Заявка</a>
           <div class="language-switcher" aria-label="Вибір мови">
-            <a href="../index.html" data-lang="ru">RU</a>
-            <a href="index.html" class="is-active" data-lang="ua">UA</a>
-            <a href="../en/index.html" data-lang="en">EN</a>
+            <a href="/ru/index.html" data-lang="ru">RU</a>
+            <a href="/ua/index.html" class="is-active" data-lang="ua">UA</a>
+            <a href="/en/index.html" data-lang="en">EN</a>
           </div>
         </div>
       </div>
@@ -1692,17 +1692,7 @@
         return cleanValue ? `@${cleanValue}` : "";
       };
 
-      const normalizePhoneNumber = (value) => {
-        const trimmedValue = value.trim();
-        if (!trimmedValue) return "";
-        const digits = trimmedValue.replace(/\D/g, "");
-
-        if (trimmedValue.startsWith("+")) {
-          return digits ? `+${digits}` : "";
-        }
-
-        return digits;
-      };
+      const normalizePhoneNumber = (value) => String(value || "").trim();
 
       telegramInput.addEventListener("input", () => {
         const normalized = normalizeTelegram(telegramInput.value);
@@ -1779,20 +1769,122 @@
           };
         }
       };
-      const getTrackingParams = () => {
-        const params = new URLSearchParams(window.location.search);
-        const readParam = (...names) =>
-          names.map((name) => params.get(name)).find((value) => value && value.trim()) || "";
+      const trackingStorageKey = "queendom_tracking_params";
+      const trackingParamNames = [
+        "utm_source",
+        "utm_medium",
+        "utm_agency",
+        "utm_campaign",
+        "utm_content",
+        "utm_term",
+        "campaign",
+        "campaign_id",
+        "adset",
+        "adset_id",
+        "creative",
+        "ad_id",
+        "placement",
+        "site_source_name",
+        "landing",
+        "funnel",
+        "source_tag",
+        "fbclid",
+      ];
+
+      const getCookieValue = (name) => {
+        const cookie = document.cookie
+          .split(";")
+          .map((part) => part.trim())
+          .find((part) => part.startsWith(`${name}=`));
+        return cookie ? decodeURIComponent(cookie.split("=").slice(1).join("=")) : "";
+      };
+
+      const getStoredTrackingParams = () => {
+        try {
+          const storedValue = sessionStorage.getItem(trackingStorageKey) || localStorage.getItem(trackingStorageKey);
+          return storedValue ? JSON.parse(storedValue) : {};
+        } catch (error) {
+          console.warn("Tracking storage unavailable", error);
+          return {};
+        }
+      };
+
+      const saveTrackingParams = (data) => {
+        try {
+          const value = JSON.stringify(data);
+          sessionStorage.setItem(trackingStorageKey, value);
+          localStorage.setItem(trackingStorageKey, value);
+        } catch (error) {
+          console.warn("Tracking storage unavailable", error);
+        }
+      };
+
+      const getDefaultTrackingContext = () => {
+        const language = document.documentElement.dataset.pageLang || document.documentElement.lang || "";
+        const normalizedLanguage = language === "uk" ? "ua" : language;
+        const path = window.location.pathname;
+        const isApply = path.includes("/apply/");
 
         return {
-          campaign: readParam("utm_campaign", "campaign"),
-          adset: readParam("utm_adset", "adset"),
-          creative: readParam("utm_creative", "utm_content", "creative"),
-          placement: readParam("utm_placement", "placement"),
-          landing: window.location.href,
+          language: normalizedLanguage,
+          landing: isApply && normalizedLanguage ? `apply_${normalizedLanguage}` : normalizedLanguage ? `full_${normalizedLanguage}` : "",
+          funnel: isApply && normalizedLanguage ? `apply_${normalizedLanguage}` : normalizedLanguage ? `full_${normalizedLanguage}` : "",
         };
       };
 
+      const collectTrackingParams = () => {
+        const params = new URLSearchParams(window.location.search);
+        const stored = getStoredTrackingParams();
+        const current = {};
+
+        trackingParamNames.forEach((name) => {
+          const value = params.get(name);
+          if (value) current[name] = value;
+        });
+
+        const fbclid = current.fbclid || stored.fbclid || "";
+        const fbp = getCookieValue("_fbp") || stored._fbp || "";
+        const fbc = getCookieValue("_fbc") || stored._fbc || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : "");
+        const merged = {
+          ...stored,
+          ...current,
+          fbclid,
+          _fbp: fbp,
+          _fbc: fbc,
+        };
+
+        saveTrackingParams(merged);
+        return merged;
+      };
+
+      collectTrackingParams();
+
+      const createEventId = () => {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+        return `lead_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+      };
+
+      const getTrackingParams = () => {
+        const defaults = getDefaultTrackingContext();
+        const tracking = collectTrackingParams();
+        const language = defaults.language || "";
+        const platform = tracking.utm_source || tracking.site_source_name || "";
+
+        return {
+          ...tracking,
+          page_path: window.location.pathname,
+          page_url: window.location.href,
+          landing: tracking.landing || defaults.landing,
+          funnel: tracking.funnel || defaults.funnel,
+          language,
+          platform,
+          source_tag: tracking.source_tag || "",
+          referrer: document.referrer || "",
+          user_agent: navigator.userAgent || "",
+        };
+      };
       applicationForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
@@ -1819,23 +1911,52 @@
             console.warn("Client metadata unavailable", error);
           }
 
-          const createdAt = new Date().toLocaleString();
+          const createdAt = new Date();
+          const createdAtLocal = createdAt.toLocaleString();
+          const createdAtIso = createdAt.toISOString();
           const trackingParams = getTrackingParams();
+          const leadId = createEventId();
           const payload = {
-            date: createdAt,
-            created_at: createdAt,
+            lead_id: leadId,
+            date: createdAtLocal,
+            created_at: createdAtLocal,
+            created_at_iso: createdAtIso,
             username,
             number,
             telegram: username,
             phone: number,
+            telegram_link: username ? `https://t.me/${username.replace(/^@/, "")}` : "",
             device: clientMetadata.device,
             browser: clientMetadata.browser,
             countryip: clientMetadata.countryip,
-            campaign: trackingParams.campaign,
-            adset: trackingParams.adset,
-            creative: trackingParams.creative,
-            placement: trackingParams.placement,
+            page_path: trackingParams.page_path,
+            page_url: trackingParams.page_url,
             landing: trackingParams.landing,
+            funnel: trackingParams.funnel,
+            language: trackingParams.language,
+            platform: trackingParams.platform,
+            source_tag: trackingParams.source_tag,
+            utm_source: trackingParams.utm_source || "",
+            utm_medium: trackingParams.utm_medium || "",
+            utm_agency: trackingParams.utm_agency || "",
+            utm_campaign: trackingParams.utm_campaign || "",
+            utm_content: trackingParams.utm_content || "",
+            utm_term: trackingParams.utm_term || "",
+            campaign: trackingParams.campaign || trackingParams.utm_campaign || "",
+            campaign_id: trackingParams.campaign_id || "",
+            adset: trackingParams.adset || trackingParams.utm_term || "",
+            adset_id: trackingParams.adset_id || "",
+            creative: trackingParams.creative || trackingParams.utm_content || "",
+            ad_id: trackingParams.ad_id || "",
+            placement: trackingParams.placement || "",
+            site_source_name: trackingParams.site_source_name || "",
+            fbclid: trackingParams.fbclid || "",
+            _fbp: trackingParams._fbp || "",
+            _fbc: trackingParams._fbc || "",
+            referrer: trackingParams.referrer,
+            user_agent: trackingParams.user_agent,
+            event_id: leadId,
+            meta_event_id: leadId,
           };
 
           const response = await fetch(submitEndpoint, {

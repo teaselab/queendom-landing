@@ -1,3 +1,8 @@
+const { randomUUID } = require("crypto");
+
+const defaultSheetsEndpoint =
+  "https://script.google.com/macros/s/AKfycbzCJZYZEedWOGCcs2B0RMwntHwPgW46stOYIwUUhuvi7cG-20j4SAZjB0Z_RQJTVTYCPw/exec";
+
 const escapeHtml = (value = "") =>
   String(value)
     .replace(/&/g, "&amp;")
@@ -8,80 +13,158 @@ const escapeHtml = (value = "") =>
 
 const field = (value) => {
   const cleanValue = String(value || "").trim();
-  return cleanValue || "-";
+  return cleanValue || "";
 };
 
-const buildMessage = (body) => {
-  const phone = field(body.number || body.phone);
-  const telegram = field(body.username || body.telegram);
-  const campaign = field(body.campaign || body.utm_campaign);
-  const adset = field(body.adset || body.utm_adset);
-  const creative = field(body.creative || body.utm_creative || body.utm_content);
-  const placement = field(body.placement || body.utm_placement);
-  const landing = field(body.landing);
-  const createdAt = field(body.created_at || body.date || new Date().toLocaleString("ru-RU"));
+const displayField = (value) => field(value) || "-";
 
-  return [
-    "🔥 <b>Новая заявка</b>",
-    "",
-    `📱 Телефон: <code>${escapeHtml(phone)}</code>`,
-    `💬 Telegram: <code>${escapeHtml(telegram)}</code>`,
-    "",
-    `📈 Кампания: ${escapeHtml(campaign)}`,
-    `🎯 Adset: ${escapeHtml(adset)}`,
-    `🎨 Креатив: ${escapeHtml(creative)}`,
-    "",
-    `📍 Placement: ${escapeHtml(placement)}`,
-    "",
-    `🌍 Landing: ${escapeHtml(landing)}`,
-    "",
-    `🕒 Время: ${escapeHtml(createdAt)}`,
-  ].join("\n");
+const getHeader = (req, name) => {
+  const value = req.headers[name.toLowerCase()];
+  return Array.isArray(value) ? value[0] : value || "";
 };
 
-const defaultSheetsEndpoint =
-  "https://script.google.com/macros/s/AKfycbzCJZYZEedWOGCcs2B0RMwntHwPgW46stOYIwUUhuvi7cG-20j4SAZjB0Z_RQJTVTYCPw/exec";
+const getClientIp = (req) => {
+  const forwardedFor = getHeader(req, "x-forwarded-for");
+  if (forwardedFor) return forwardedFor.split(",")[0].trim();
+  return getHeader(req, "x-real-ip") || "";
+};
 
-const buildSheetsPayload = (body) => {
-  const createdAt = body.created_at || body.date || new Date().toLocaleString("ru-RU");
-  const username = body.username || body.telegram || "";
-  const number = body.number || body.phone || "";
-  const campaign = body.campaign || body.utm_campaign || "";
-  const adset = body.adset || body.utm_adset || "";
-  const creative = body.creative || body.utm_creative || body.utm_content || "";
-  const placement = body.placement || body.utm_placement || "";
+const buildSheetsPayload = ({ body, clientIp, requestId }) => {
+  const leadId = field(body.lead_id) || randomUUID();
+  const leadGenerationDate = field(body.created_at || body.date) || new Date().toLocaleString("ru-RU");
+  const createdAtIso = field(body.created_at_iso) || new Date().toISOString();
+  const phone = field(body.phone || body.number);
+  const telegram = field(body.telegram || body.username);
+  const campaignName = field(body.campaign || body.utm_campaign);
+  const adsetName = field(body.adset || body.utm_term);
+  const creative = field(body.creative || body.utm_content);
+  const eventId = field(body.event_id) || leadId;
+  const metaEventId = field(body.meta_event_id) || eventId;
 
   return {
-    date: createdAt,
-    created_at: createdAt,
-    username,
-    number,
-    telegram: username,
-    phone: number,
-    device: body.device || "",
-    browser: body.browser || "",
-    countryip: body.countryip || "",
-    campaign,
-    adset,
+    "Lead ID": leadId,
+    "Lead Generation Date": leadGenerationDate,
+    "Created At ISO": createdAtIso,
+    PHONE: phone,
+    TELEGRAM: telegram,
+    "Telegram Link": field(body.telegram_link) || (telegram ? `https://t.me/${telegram.replace(/^@/, "")}` : ""),
+    "Page Path": field(body.page_path),
+    "Page URL": field(body.page_url),
+    Landing: field(body.landing),
+    Funnel: field(body.funnel),
+    Language: field(body.language),
+    Platform: field(body.platform || body.utm_source),
+    "Source Tag": field(body.source_tag),
+    utm_source: field(body.utm_source),
+    utm_medium: field(body.utm_medium),
+    utm_campaign: field(body.utm_campaign),
+    utm_content: field(body.utm_content),
+    utm_term: field(body.utm_term),
+    "Campaign Name": campaignName,
+    "Campaign ID": field(body.campaign_id),
+    "Adset Name": adsetName,
+    "Adset ID": field(body.adset_id),
+    Creative: creative,
+    "Ad ID": field(body.ad_id),
+    Placement: field(body.placement),
+    "Site Source Name": field(body.site_source_name),
+    fbclid: field(body.fbclid),
+    _fbp: field(body._fbp),
+    _fbc: field(body._fbc),
+    Referrer: field(body.referrer),
+    "User Agent": field(body.user_agent || body.browser),
+    "Client IP": clientIp,
+    "Request ID": requestId,
+    "Event ID": eventId,
+    "Meta Event ID": metaEventId,
+
+    lead_id: leadId,
+    lead_generation_date: leadGenerationDate,
+    date: leadGenerationDate,
+    created_at: leadGenerationDate,
+    created_at_iso: createdAtIso,
+    phone,
+    number: phone,
+    telegram,
+    username: telegram,
+    telegram_link: field(body.telegram_link) || (telegram ? `https://t.me/${telegram.replace(/^@/, "")}` : ""),
+    page_path: field(body.page_path),
+    page_url: field(body.page_url),
+    landing: field(body.landing),
+    funnel: field(body.funnel),
+    language: field(body.language),
+    platform: field(body.platform || body.utm_source),
+    source_tag: field(body.source_tag),
+    utm_source: field(body.utm_source),
+    utm_medium: field(body.utm_medium),
+    utm_campaign: field(body.utm_campaign),
+    utm_content: field(body.utm_content),
+    utm_term: field(body.utm_term),
+    campaign: campaignName,
+    campaign_name: campaignName,
+    campaign_id: field(body.campaign_id),
+    adset: adsetName,
+    adset_name: adsetName,
+    adset_id: field(body.adset_id),
     creative,
-    placement,
-    landing: body.landing || "",
-    utm_campaign: campaign,
-    utm_adset: adset,
-    utm_creative: body.utm_creative || body.creative || "",
-    utm_content: body.utm_content || body.creative || "",
-    utm_placement: placement,
+    ad_id: field(body.ad_id),
+    placement: field(body.placement),
+    site_source_name: field(body.site_source_name),
+    fbclid: field(body.fbclid),
+    _fbp: field(body._fbp),
+    _fbc: field(body._fbc),
+    referrer: field(body.referrer),
+    user_agent: field(body.user_agent || body.browser),
+    client_ip: clientIp,
+    request_id: requestId,
+    event_id: eventId,
+    meta_event_id: metaEventId,
+    device: field(body.device),
+    browser: field(body.browser),
+    countryip: field(body.countryip),
   };
 };
 
-const sendToGoogleSheets = async (body) => {
+const buildTelegramMessage = (payload) =>
+  [
+    "🔥 <b>Новая заявка</b>",
+    "",
+    "📱 Телефон:",
+    `<code>${escapeHtml(displayField(payload.PHONE))}</code>`,
+    "",
+    "💬 Telegram:",
+    `<code>${escapeHtml(displayField(payload.TELEGRAM))}</code>`,
+    "",
+    "🌍 Язык:",
+    escapeHtml(displayField(payload.Language)),
+    "",
+    "📍 Landing:",
+    escapeHtml(displayField(payload.Landing)),
+    "",
+    "📈 Кампания:",
+    escapeHtml(displayField(payload["Campaign Name"])),
+    "",
+    "🎯 Adset:",
+    escapeHtml(displayField(payload["Adset Name"])),
+    "",
+    "🎨 Creative:",
+    escapeHtml(displayField(payload.Creative)),
+    "",
+    "📍 Placement:",
+    escapeHtml(displayField(payload.Placement)),
+    "",
+    "🕒 Дата:",
+    escapeHtml(displayField(payload["Lead Generation Date"])),
+  ].join("\n");
+
+const sendToGoogleSheets = async (payload) => {
   const endpoint = process.env.GOOGLE_SHEETS_ENDPOINT || defaultSheetsEndpoint;
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(buildSheetsPayload(body)),
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
@@ -90,7 +173,7 @@ const sendToGoogleSheets = async (body) => {
   }
 };
 
-const sendToTelegram = async ({ token, chatId, body }) => {
+const sendToTelegram = async ({ token, chatId, payload }) => {
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: {
@@ -98,7 +181,7 @@ const sendToTelegram = async ({ token, chatId, body }) => {
     },
     body: JSON.stringify({
       chat_id: chatId,
-      text: buildMessage(body),
+      text: buildTelegramMessage(payload),
       parse_mode: "HTML",
       disable_web_page_preview: true,
     }),
@@ -130,13 +213,17 @@ module.exports = async function handler(req, res) {
 
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    const requestId = getHeader(req, "x-vercel-id") || getHeader(req, "x-request-id") || randomUUID();
+    const payload = buildSheetsPayload({
+      body,
+      clientIp: getClientIp(req),
+      requestId,
+    });
 
-    await Promise.all([
-      sendToGoogleSheets(body),
-      sendToTelegram({ token, chatId, body }),
-    ]);
+    await sendToGoogleSheets(payload);
+    await sendToTelegram({ token, chatId, payload });
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, lead_id: payload["Lead ID"], event_id: payload["Event ID"] });
   } catch (error) {
     console.error("Lead handler failed", error);
     return res.status(500).json({ ok: false, error: "Lead handler failed" });

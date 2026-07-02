@@ -1,12 +1,12 @@
 ﻿<!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Application | Queendom Agency</title>
+    <title>Заявка | Queendom Agency</title>
     <link rel="icon" type="image/jpeg" href="../../assets/queendom-logo.jpg" />
     <link rel="apple-touch-icon" href="../../assets/queendom-logo.png" />
-    <meta name="description" content="Hidden application page for Queendom Agency." />
+    <meta name="description" content="Скрытая страница заявки Queendom Agency." />
     <style>
       :root {
         --black: #211719;
@@ -863,10 +863,10 @@
   <body>
     <header class="header">
       <div class="shell header-inner">
-        <div class="language-switcher" aria-label="Language selection">
-          <a href="/apply/ru/index.html" data-lang="ru">RU</a>
+        <div class="language-switcher" aria-label="Выбор языка">
+          <a href="/apply/ru/index.html" class="is-active" data-lang="ru">RU</a>
           <a href="/apply/ua/index.html" data-lang="ua">UA</a>
-          <a href="/apply/en/index.html" class="is-active" data-lang="en">EN</a>
+          <a href="/apply/en/index.html" data-lang="en">EN</a>
         </div>
       </div>
     </header>
@@ -875,27 +875,27 @@
       <section class="shell">
         <div class="glass form-wrap">
           <div class="form-info">
-            <h1>Ready?</h1>
-            <p class="lead">Fill out the form and we will contact you in Telegram within 24 hours</p>
+            <h1>Готова?</h1>
+            <p class="lead">Заполни форму и мы свяжемся с тобой в Telegram в течении 24 часов</p>
           </div>
 
           <form class="form" id="application-form">
             <div class="fields">
               <label>
-                <span>Phone number</span>
-                <input id="phone-input" name="number" type="tel" placeholder="Mobile phone" autocomplete="tel" required />
+                <span>Номер телефона</span>
+                <input id="phone-input" name="number" type="tel" placeholder="Мобильный телефон" autocomplete="tel" required />
               </label>
               <label>
                 <span>Telegram</span>
-                <input id="telegram-input" name="username" type="text" placeholder="@username in Telegram" autocomplete="username" required />
+                <input id="telegram-input" name="username" type="text" placeholder="@username в Telegram" autocomplete="username" required />
               </label>
             </div>
-            <p class="form-note">Data is used only for contact and an initial consultation.</p>
-            <button class="button" type="submit" id="submit-button">Leave application</button>
-            <p class="privacy-note">Confidential<br />2026 Queendom agency</p>
+            <p class="form-note">Данные используются только для связи и первичной консультации.</p>
+            <button class="button" type="submit" id="submit-button">Оставить заявку</button>
+            <p class="privacy-note">Конфиденциально<br />2026 Queendom agency</p>
             <div class="success" id="success-message">
-              <strong>Thank you</strong>
-              <p>We received your application and will contact you in Telegram soon.</p>
+              <strong>Спасибо</strong>
+              <p>Мы получили заявку и скоро свяжемся с тобой в Telegram.</p>
             </div>
           </form>
         </div>
@@ -1097,7 +1097,7 @@
         event.preventDefault();
 
         submitButton.disabled = true;
-        submitButton.textContent = "Sending...";
+        submitButton.textContent = "Отправляем...";
 
         try {
           const formData = new FormData(applicationForm);
@@ -1181,10 +1181,10 @@
             fbq('track', 'Lead');
           }
         } catch (error) {
-          alert("Could not send the application. Please try again.");
+          alert("Не удалось отправить заявку. Попробуй еще раз.");
         } finally {
           submitButton.disabled = false;
-          submitButton.textContent = "Leave application";
+          submitButton.textContent = "Оставить заявку";
         }
       });
     </script>
