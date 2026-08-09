@@ -846,7 +846,7 @@
         var params = new URLSearchParams(window.location.search);
         var agency = (params.get("utm_agency") || "").trim().toLowerCase();
         var pixelIds = {
-          mt: "995470240029815",
+          mt: ["995470240029815", "2561700574337393"],
           luna: ["1338803158361948", "1513404956725730", "3228893330616001"],
         };
         var pixelId = pixelIds[agency];
