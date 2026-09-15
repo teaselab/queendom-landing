@@ -1,0 +1,20 @@
+{
+  "name": "telegram-candidate-questionnaire-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Telegram webhook bot for candidate questionnaires with Redis sessions and Google Sheets final persistence.",
+  "main": "api/telegram.js",
+  "scripts": {
+    "test": "node --test",
+    "lint": "node --check api/telegram.js && node --check api/menu.js && node --check api/menu-action.js && node --check scripts/setup-telegram-menu.js && node --check src/bot/handler.js && node --check src/bot/questionnaire/engine.js && node --check src/bot/questionnaire/questions.js && node --check src/storage/redis.js && node --check src/telegram/keyboards.js && node --check src/telegram/send.js && node --check src/telegram/webapp.js && node --check src/sheets/client.js && node --check src/utils/background.js && node --check src/utils/html.js && node --check src/utils/perf.js && node --check src/utils/privacy.js && node --check src/utils/scoring.js && node --check src/utils/validation.js && node --check test/engine.test.js && node --check test/api.test.js && node --check test/handler.test.js && node --check test/storage.test.js && node --check test/sheets-client.test.js && node --check test/sheets-headers.test.js && node --check test/webapp.test.js",
+    "setup:telegram-menu": "node scripts/setup-telegram-menu.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.35.3",
+    "@vercel/functions": "^2.2.13"
+  },
+  "license": "UNLICENSED"
+}

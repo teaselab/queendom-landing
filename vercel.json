@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/telegram.js": {
+      "maxDuration": 10
+    },
+    "api/menu-action.js": {
+      "maxDuration": 10
+    }
+  }
+}
